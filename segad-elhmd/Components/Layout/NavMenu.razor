@@ -1,6 +1,9 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">segad-elhmd</a>
+        <a class="navbar-brand" href="">
+            <i class="bi bi-shop"></i>
+            <span class="brand-text">Segad Elhmed</span>
+        </a>
     </div>
 </div>
 
@@ -8,21 +11,26 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
+        <div class="nav-section-title">MAIN MENU</div>
+        
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <i class="bi bi-house-door-fill"></i>
+                <span class="nav-text">Dashboard</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="categories">
-                <span class="bi bi-folder-fill-nav-menu" aria-hidden="true"></span> Categories
+                <i class="bi bi-folder-fill"></i>
+                <span class="nav-text">Categories</span>
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="carpets">
-                <span class="bi bi-grid-fill-nav-menu" aria-hidden="true"></span> Carpets
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                <span class="nav-text">Carpets</span>
             </NavLink>
         </div>
     </nav>
