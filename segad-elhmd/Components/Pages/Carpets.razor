@@ -1,0 +1,134 @@
+@page "/carpets"
+@using MediatR
+@using Application.DTOs
+@using Application.Queries
+@using Application.Commands
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Carpet Management</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>Carpet Stock Management</h1>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" @onclick="NavigateToCreate">
+                <i class="bi bi-plus-circle"></i> Add New Carpet
+            </button>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else if (carpets == null || !carpets.Any())
+    {
+        <div class="alert alert-info">
+            No carpets in stock. Click "Add New Carpet" to get started.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Color</th>
+                        <th>Material</th>
+                        <th>Size (L×W)</th>
+                        <th>Area (m²)</th>
+                        <th>Price/m²</th>
+                        <th>Total Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var carpet in carpets)
+                    {
+                        <tr>
+                            <td>@carpet.Name</td>
+                            <td>@carpet.Color</td>
+                            <td>@carpet.Material</td>
+                            <td>@carpet.Length.ToString("F2") × @carpet.Width.ToString("F2") m</td>
+                            <td>@carpet.Area.ToString("F2")</td>
+                            <td>$@carpet.PricePerSquareMeter.ToString("F2")</td>
+                            <td>$@carpet.TotalPrice.ToString("F2")</td>
+                            <td>
+                                <span class="badge @(carpet.StockQuantity > 5 ? "bg-success" : carpet.StockQuantity > 0 ? "bg-warning" : "bg-danger")">
+                                    @carpet.StockQuantity
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary me-1" @onclick="() => NavigateToEdit(carpet.Id)">
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteCarpet(carpet.Id)">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-secondary mt-3">
+            <strong>Total Carpets:</strong> @carpets.Count() | 
+            <strong>Total Stock:</strong> @carpets.Sum(c => c.StockQuantity) units
+        </div>
+    }
+</div>
+
+@code {
+    private IEnumerable<CarpetDto> carpets = Enumerable.Empty<CarpetDto>();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCarpets();
+    }
+
+    private async Task LoadCarpets()
+    {
+        isLoading = true;
+        carpets = await Mediator.Send(new GetAllCarpetsQuery());
+        isLoading = false;
+    }
+
+    private void NavigateToCreate()
+    {
+        Navigation.NavigateTo("/carpets/create");
+    }
+
+    private void NavigateToEdit(Guid id)
+    {
+        Navigation.NavigateTo($"/carpets/edit/{id}");
+    }
+
+    private async Task DeleteCarpet(Guid id)
+    {
+        var carpet = carpets.FirstOrDefault(c => c.Id == id);
+        if (carpet != null)
+        {
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", 
+                $"Are you sure you want to delete '{carpet.Name}'?");
+            
+            if (confirmed)
+            {
+                await Mediator.Send(new DeleteCarpetCommand(id));
+                await LoadCarpets();
+            }
+        }
+    }
+}

@@ -1,0 +1,191 @@
+@page "/carpets/edit/{id:guid}"
+@using MediatR
+@using Application.DTOs
+@using Application.Queries
+@using Application.Commands
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Edit Carpet</PageTitle>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Edit Carpet</h2>
+            
+            @if (isLoading)
+            {
+                <div class="text-center mt-5">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+            else if (model == null)
+            {
+                <div class="alert alert-danger">
+                    Carpet not found.
+                </div>
+            }
+            else
+            {
+                <div class="card mt-3">
+                    @if (validationErrors.Any())
+                    {
+                        <div class="alert alert-danger m-3">
+                            <ul class="mb-0">
+                                @foreach (var error in validationErrors)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <EditForm Model="@model" OnValidSubmit="HandleSubmit">
+                            <DataAnnotationsValidator />
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Name *</label>
+                                <InputText @bind-Value="model.Name" class="form-control" />
+                                <ValidationMessage For="@(() => model.Name)" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <InputTextArea @bind-Value="model.Description" class="form-control" rows="3" />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Length (meters) *</label>
+                                    <InputNumber @bind-Value="model.Length" class="form-control" step="0.01" />
+                                    <ValidationMessage For="@(() => model.Length)" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Width (meters) *</label>
+                                    <InputNumber @bind-Value="model.Width" class="form-control" step="0.01" />
+                                    <ValidationMessage For="@(() => model.Width)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Color *</label>
+                                    <InputText @bind-Value="model.Color" class="form-control" />
+                                    <ValidationMessage For="@(() => model.Color)" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Material *</label>
+                                    <InputText @bind-Value="model.Material" class="form-control" />
+                                    <ValidationMessage For="@(() => model.Material)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Price per m² *</label>
+                                    <InputNumber @bind-Value="model.PricePerSquareMeter" class="form-control" step="0.01" />
+                                    <ValidationMessage For="@(() => model.PricePerSquareMeter)" />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Stock Quantity *</label>
+                                    <InputNumber @bind-Value="model.StockQuantity" class="form-control" />
+                                    <ValidationMessage For="@(() => model.StockQuantity)" />
+                                </div>
+                            </div>
+
+                            @if (model.Length > 0 && model.Width > 0 && model.PricePerSquareMeter > 0)
+                            {
+                                <div class="alert alert-info">
+                                    <strong>Calculated:</strong> 
+                                    Area = @((model.Length * model.Width).ToString("F2")) m² | 
+                                    Total Price = $@((model.Length * model.Width * model.PricePerSquareMeter).ToString("F2"))
+                                </div>
+                            }
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                                    @(isSubmitting ? "Updating..." : "Update Carpet")
+                                </button>
+                                <button type="button" class="btn btn-secondary" @onclick="Cancel">
+                                    Cancel
+                                </button>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    private UpdateCarpetDto? model;
+    private bool isLoading = true;
+    private bool isSubmitting = false;
+    private List<string> validationErrors = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCarpet();
+    }
+
+    private async Task LoadCarpet()
+    {
+        isLoading = true;
+        var carpet = await Mediator.Send(new GetCarpetByIdQuery(Id));
+        
+        if (carpet != null)
+        {
+            model = new UpdateCarpetDto
+            {
+                Id = carpet.Id,
+                Name = carpet.Name,
+                Description = carpet.Description,
+                Length = carpet.Length,
+                Width = carpet.Width,
+                Color = carpet.Color,
+                Material = carpet.Material,
+                PricePerSquareMeter = carpet.PricePerSquareMeter,
+                StockQuantity = carpet.StockQuantity
+            };
+        }
+        
+        isLoading = false;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (model == null) return;
+        
+        isSubmitting = true;
+        try
+        {
+            await Mediator.Send(new UpdateCarpetCommand(model));
+            Navigation.NavigateTo("/carpets");
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            validationErrors = ex.Errors.Select(e => e.ErrorMessage).ToList();
+            isLoading = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating carpet: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/carpets");
+    }
+}
