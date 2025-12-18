@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.Resources;
 using Domain.Constants;
 using FluentValidation;
 
@@ -9,44 +10,47 @@ public class CreateCarpetDtoValidator : AbstractValidator<CreateCarpetDto>
     public CreateCarpetDtoValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Name is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetNameRequired)
             .MaximumLength(CarpetConstants.NameMaxLength)
-            .WithMessage($"Name cannot exceed {CarpetConstants.NameMaxLength} characters");
+            .WithMessage(string.Format(ValidationMessages.CarpetNameMaxLength, CarpetConstants.NameMaxLength));
 
         RuleFor(x => x.Description)
             .MaximumLength(CarpetConstants.DescriptionMaxLength)
-            .WithMessage($"Description cannot exceed {CarpetConstants.DescriptionMaxLength} characters");
+            .WithMessage(string.Format(ValidationMessages.CarpetDescriptionMaxLength, CarpetConstants.DescriptionMaxLength));
 
         RuleFor(x => x.Length)
-            .NotEmpty().WithMessage("Length is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetLengthRequired)
             .InclusiveBetween(CarpetConstants.MinDimension, CarpetConstants.MaxDimension)
-            .WithMessage($"Length must be between {CarpetConstants.MinDimension} and {CarpetConstants.MaxDimension} meters");
+            .WithMessage(string.Format(ValidationMessages.CarpetLengthRange, CarpetConstants.MinDimension, CarpetConstants.MaxDimension));
 
         RuleFor(x => x.Width)
-            .NotEmpty().WithMessage("Width is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetWidthRequired)
             .InclusiveBetween(CarpetConstants.MinDimension, CarpetConstants.MaxDimension)
-            .WithMessage($"Width must be between {CarpetConstants.MinDimension} and {CarpetConstants.MaxDimension} meters");
+            .WithMessage(string.Format(ValidationMessages.CarpetWidthRange, CarpetConstants.MinDimension, CarpetConstants.MaxDimension));
 
         RuleFor(x => x.Color)
-            .NotEmpty().WithMessage("Color is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetColorRequired)
             .MaximumLength(CarpetConstants.ColorMaxLength)
-            .WithMessage($"Color cannot exceed {CarpetConstants.ColorMaxLength} characters");
+            .WithMessage(string.Format(ValidationMessages.CarpetColorMaxLength, CarpetConstants.ColorMaxLength));
 
         RuleFor(x => x.Material)
-            .NotEmpty().WithMessage("Material is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetMaterialRequired)
             .MaximumLength(CarpetConstants.MaterialMaxLength)
-            .WithMessage($"Material cannot exceed {CarpetConstants.MaterialMaxLength} characters");
+            .WithMessage(string.Format(ValidationMessages.CarpetMaterialMaxLength, CarpetConstants.MaterialMaxLength));
 
         RuleFor(x => x.PricePerSquareMeter)
-            .NotEmpty().WithMessage("Price per square meter is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetPriceRequired)
             .InclusiveBetween(CarpetConstants.MinPrice, CarpetConstants.MaxPrice)
-            .WithMessage($"Price must be between {CarpetConstants.MinPrice} and {CarpetConstants.MaxPrice}")
+            .WithMessage(string.Format(ValidationMessages.CarpetPriceRange, CarpetConstants.MinPrice, CarpetConstants.MaxPrice))
             .PrecisionScale(CarpetConstants.DecimalPrecision, CarpetConstants.DecimalScale, ignoreTrailingZeros: true)
-            .WithMessage($"Price must have a maximum of {CarpetConstants.DecimalScale} decimal places");
+            .WithMessage(string.Format(ValidationMessages.CarpetPriceRange, CarpetConstants.MinPrice, CarpetConstants.MaxPrice));
 
         RuleFor(x => x.StockQuantity)
-            .NotEmpty().WithMessage("Stock quantity is required")
+            .NotEmpty().WithMessage(ValidationMessages.CarpetStockRequired)
             .InclusiveBetween(CarpetConstants.MinStockQuantity, CarpetConstants.MaxStockQuantity)
-            .WithMessage($"Stock quantity must be between {CarpetConstants.MinStockQuantity} and {CarpetConstants.MaxStockQuantity}");
+            .WithMessage(string.Format(ValidationMessages.CarpetStockRange, CarpetConstants.MinStockQuantity, CarpetConstants.MaxStockQuantity));
+
+        RuleFor(x => x.CategoryId)
+            .NotEmpty().WithMessage(ValidationMessages.CarpetCategoryRequired);
     }
 }

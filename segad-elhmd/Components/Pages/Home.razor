@@ -1,183 +1,320 @@
 ﻿@page "/"
+@using MediatR
+@using Application.DTOs
+@using Application.Queries
+@using Application.Resources
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
 
-<PageTitle>Carpet Stock Management</PageTitle>
+<PageTitle>@SharedResources.Home - Carpet Inventory</PageTitle>
 
-<div class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-3 fw-bold mb-4">
-                    <span class="text-gradient">Carpet Stock</span><br/>
-                    Management System
-                </h1>
-                <p class="lead text-muted mb-4">
-                    Streamline your inventory with our modern, easy-to-use carpet management platform.
-                    Track stock, manage categories, and optimize your business workflow.
-                </p>
-                <div class="d-flex gap-3">
-                    <a href="/carpets" class="btn btn-primary btn-lg">
-                        <i class="bi bi-grid-3x3-gap-fill me-2"></i>View Inventory
-                    </a>
-                    <a href="/categories/create" class="btn btn-outline-primary btn-lg">
-                        <i class="bi bi-plus-circle me-2"></i>Add Category
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <div class="hero-illustration">
-                    <i class="bi bi-box-seam" style="font-size: 15rem; color: var(--primary-light); opacity: 0.2;"></i>
-                </div>
-            </div>
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="mb-2">
+                <i class="bi bi-house-door-fill text-primary"></i>
+                @SharedResources.Home
+            </h1>
+            <p class="text-muted">@SharedResources.WelcomeMessage</p>
         </div>
+        <a href="/carpets/create" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle me-2"></i>@SharedResources.AddNewCarpet
+        </a>
     </div>
 </div>
 
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold mb-3">Key Features</h2>
-        <p class="text-muted">Everything you need to manage your carpet inventory efficiently</p>
+@if (isLoading)
+{
+    <div class="loading-container">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">@SharedResources.Loading</span>
+        </div>
+        <p class="mt-3 text-muted">@SharedResources.LoadingCarpets</p>
+    </div>
+}
+else if (carpets == null || !carpets.Any())
+{
+    <div class="empty-state">
+        <i class="bi bi-inbox" style="font-size: 5rem; color: var(--text-secondary); opacity: 0.5;"></i>
+        <h3 class="mt-3">@SharedResources.NoCarpets</h3>
+        <p class="text-muted mb-4">@SharedResources.AddFirstCarpet</p>
+        <a href="/carpets/create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>@SharedResources.AddYourFirstCarpet
+        </a>
+    </div>
+}
+else
+{
+    <div class="stats-row mb-4">
+        <div class="stat-box">
+            <i class="bi bi-box-seam"></i>
+            <div>
+                <div class="stat-value">@carpets.Count()</div>
+                <div class="stat-label">@SharedResources.TotalProducts</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <i class="bi bi-stack"></i>
+            <div>
+                <div class="stat-value">@carpets.Sum(c => c.StockQuantity)</div>
+                <div class="stat-label">@SharedResources.TotalUnits</div>
+            </div>
+        </div>
+        <div class="stat-box">
+            <i class="bi bi-currency-dollar"></i>
+            <div>
+                <div class="stat-value">@carpets.Sum(c => c.TotalPrice).ToString("N0")</div>
+                <div class="stat-label">@SharedResources.TotalValue</div>
+            </div>
+        </div>
     </div>
 
     <div class="row g-4">
-        <div class="col-md-6 col-lg-3">
-            <div class="feature-card">
-                <div class="feature-icon bg-primary">
-                    <i class="bi bi-folder-fill"></i>
+        @foreach (var carpet in carpets)
+        {
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="carpet-card">
+                    <div class="carpet-card-header">
+                        <h5 class="mb-0">@carpet.Name</h5>
+                        <span class="badge @GetStockBadgeClass(carpet.StockQuantity)">@carpet.StockQuantity @SharedResources.Units</span>
+                    </div>
+                    <div class="carpet-card-body">
+                        <div class="carpet-info">
+                            <div class="info-item">
+                                <i class="bi bi-folder text-primary"></i>
+                                <span>@carpet.CategoryName</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-rulers text-success"></i>
+                                <span>@carpet.Width × @carpet.Length @SharedResources.Meters</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-paint-bucket text-info"></i>
+                                <span>@carpet.Color</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-bounding-box text-warning"></i>
+                                <span>@carpet.Area.ToString("F2") @SharedResources.SquareMeters</span>
+                            </div>
+                        </div>
+                        <div class="carpet-price">
+                            <div class="price-label">@SharedResources.TotalPrice</div>
+                            <div class="price-value">@carpet.TotalPrice.ToString("N0") @SharedResources.EGP</div>
+                        </div>
+                    </div>
+                    <div class="carpet-card-footer">
+                        <a href="/carpets/edit/@carpet.Id" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> @SharedResources.Edit
+                        </a>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-eye"></i> @SharedResources.Details
+                        </button>
+                    </div>
                 </div>
-                <h5 class="mt-3 mb-2">Category Management</h5>
-                <p class="text-muted small">Organize carpets into customizable categories for better inventory organization</p>
             </div>
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-            <div class="feature-card">
-                <div class="feature-icon bg-success">
-                    <i class="bi bi-calculator-fill"></i>
-                </div>
-                <h5 class="mt-3 mb-2">Auto Calculations</h5>
-                <p class="text-muted small">Automatic area and price calculations based on dimensions and pricing rules</p>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-            <div class="feature-card">
-                <div class="feature-icon bg-warning">
-                    <i class="bi bi-graph-up-arrow"></i>
-                </div>
-                <h5 class="mt-3 mb-2">Stock Tracking</h5>
-                <p class="text-muted small">Real-time stock monitoring with visual indicators and low-stock alerts</p>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-            <div class="feature-card">
-                <div class="feature-icon bg-info">
-                    <i class="bi bi-lightning-charge-fill"></i>
-                </div>
-                <h5 class="mt-3 mb-2">Fast & Easy</h5>
-                <p class="text-muted small">Intuitive interface designed for quick data entry and efficient workflow</p>
-            </div>
-        </div>
+        }
     </div>
-
-    <div class="stats-section mt-5">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <i class="bi bi-speedometer2"></i>
-                    <h3 class="fw-bold mb-1">Fast</h3>
-                    <p class="text-muted">Lightning-fast performance</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <i class="bi bi-shield-check"></i>
-                    <h3 class="fw-bold mb-1">Reliable</h3>
-                    <p class="text-muted">Built with .NET 9.0</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card">
-                    <i class="bi bi-heart-fill"></i>
-                    <h3 class="fw-bold mb-1">Easy</h3>
-                    <p class="text-muted">User-friendly interface</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+}
 
 <style>
-    .hero-section {
-        padding: 4rem 0;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-        border-radius: 20px;
-        margin: 1rem;
+    .page-header {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
     }
 
-    .text-gradient {
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(102, 126, 234, 0.15);
+    }
+
+    .stat-box i {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+    }
+
+    .carpet-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.6s ease-out backwards;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .carpet-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .carpet-card:nth-child(1) { animation-delay: 0.1s; }
+    .carpet-card:nth-child(2) { animation-delay: 0.2s; }
+    .carpet-card:nth-child(3) { animation-delay: 0.3s; }
+    .carpet-card:nth-child(4) { animation-delay: 0.4s; }
+    .carpet-card:nth-child(5) { animation-delay: 0.5s; }
+    .carpet-card:nth-child(6) { animation-delay: 0.6s; }
+    .carpet-card:nth-child(7) { animation-delay: 0.7s; }
+    .carpet-card:nth-child(8) { animation-delay: 0.8s; }
+
+    .carpet-card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1.25rem;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .carpet-card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .carpet-card-body {
+        padding: 1.25rem;
+        flex: 1;
+    }
+
+    .carpet-info {
+        display: grid;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .info-item i {
+        font-size: 1rem;
+    }
+
+    .carpet-price {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .price-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .price-value {
+        font-size: 1.5rem;
+        font-weight: 700;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
-    .hero-illustration {
-        text-align: center;
+    .carpet-card-footer {
+        padding: 1rem 1.25rem;
+        background: #f8f9fa;
+        display: flex;
+        gap: 0.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    .feature-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        height: 100%;
-        text-align: center;
+    .carpet-card-footer .btn {
+        flex: 1;
     }
 
-    .feature-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15);
-    }
-
-    .feature-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 16px;
-        display: inline-flex;
+    .loading-container {
+        display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 2rem;
-        color: white;
+        min-height: 400px;
     }
 
-    .feature-icon.bg-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .feature-icon.bg-success {
-        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-    }
-
-    .feature-icon.bg-warning {
-        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    }
-
-    .feature-icon.bg-info {
-        background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    }
-
-    .stat-card {
-        padding: 2rem;
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
         background: white;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
-
-    .stat-card i {
-        font-size: 3rem;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-    }
 </style>
+
+@code {
+    private List<CarpetDto>? carpets;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCarpets();
+    }
+
+    private async Task LoadCarpets()
+    {
+        isLoading = true;
+        var result = await Mediator.Send(new GetAllCarpetsQuery());
+        carpets = result?.ToList();
+        isLoading = false;
+    }
+
+    private string GetStockBadgeClass(int stock)
+    {
+        return stock > 5 ? "bg-success" : stock > 0 ? "bg-warning text-dark" : "bg-danger";
+    }
+}

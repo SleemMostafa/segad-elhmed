@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Navigation -->
+  <data name="Home" xml:space="preserve">
+    <value>الرئيسية</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>الفئات</value>
+  </data>
+  <data name="Carpets" xml:space="preserve">
+    <value>السجاد</value>
+  </data>
+  
+  <!-- Common Actions -->
+  <data name="Add" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>إنشاء</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>رجوع</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>جاري التحميل...</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>جاري الحفظ...</value>
+  </data>
+  
+  <!-- Home Page -->
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>مرحبا بك في لوحة التحكم الخاصة بمخزون السجاد</value>
+  </data>
+  <data name="TotalProducts" xml:space="preserve">
+    <value>إجمالي المنتجات</value>
+  </data>
+  <data name="TotalUnits" xml:space="preserve">
+    <value>إجمالي الوحدات</value>
+  </data>
+  <data name="TotalValue" xml:space="preserve">
+    <value>القيمة الإجمالية</value>
+  </data>
+  <data name="NoCarpets" xml:space="preserve">
+    <value>لا يوجد سجاد بعد</value>
+  </data>
+  <data name="AddFirstCarpet" xml:space="preserve">
+    <value>ابدأ بإضافة أول سجادة إلى المخزون</value>
+  </data>
+  <data name="AddYourFirstCarpet" xml:space="preserve">
+    <value>أضف أول سجادة</value>
+  </data>
+  
+  <!-- Carpet Page -->
+  <data name="CarpetInventory" xml:space="preserve">
+    <value>مخزون السجاد</value>
+  </data>
+  <data name="ManageCarpetStock" xml:space="preserve">
+    <value>إدارة مخزون السجاد والمنتجات</value>
+  </data>
+  <data name="AddNewCarpet" xml:space="preserve">
+    <value>إضافة سجادة جديدة</value>
+  </data>
+  <data name="LoadingCarpets" xml:space="preserve">
+    <value>جاري تحميل السجاد...</value>
+  </data>
+  
+  <!-- Category Page -->
+  <data name="CategoriesManagement" xml:space="preserve">
+    <value>إدارة الفئات</value>
+  </data>
+  <data name="OrganizeCategories" xml:space="preserve">
+    <value>تنظيم فئات السجاد</value>
+  </data>
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>إضافة فئة جديدة</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>لا توجد فئات بعد</value>
+  </data>
+  <data name="AddFirstCategory" xml:space="preserve">
+    <value>ابدأ التنظيم بإنشاء الفئة الأولى</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>عناصر</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>تم الإنشاء</value>
+  </data>
+  <data name="CannotDeleteCategory" xml:space="preserve">
+    <value>هذه الفئة تحتوي على سجاد ولا يمكن حذفها</value>
+  </data>
+  
+  <!-- Form Labels -->
+  <data name="Name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>الوصف</value>
+  </data>
+  <data name="Length" xml:space="preserve">
+    <value>الطول</value>
+  </data>
+  <data name="Width" xml:space="preserve">
+    <value>العرض</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>اللون</value>
+  </data>
+  <data name="Material" xml:space="preserve">
+    <value>المادة</value>
+  </data>
+  <data name="PricePerSquareMeter" xml:space="preserve">
+    <value>السعر لكل متر مربع</value>
+  </data>
+  <data name="StockQuantity" xml:space="preserve">
+    <value>كمية المخزون</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>اختر فئة</value>
+  </data>
+  
+  <!-- Form Pages -->
+  <data name="CreateNewCarpet" xml:space="preserve">
+    <value>إنشاء سجادة جديدة</value>
+  </data>
+  <data name="CreateNewCategory" xml:space="preserve">
+    <value>إنشاء فئة جديدة</value>
+  </data>
+  <data name="EditCarpet" xml:space="preserve">
+    <value>تعديل السجادة</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>تعديل الفئة</value>
+  </data>
+  <data name="BasicInformation" xml:space="preserve">
+    <value>المعلومات الأساسية</value>
+  </data>
+  <data name="Dimensions" xml:space="preserve">
+    <value>الأبعاد</value>
+  </data>
+  <data name="PricingStock" xml:space="preserve">
+    <value>التسعير والمخزون</value>
+  </data>
+  <data name="CategoryInfo" xml:space="preserve">
+    <value>معلومات الفئة</value>
+  </data>
+  
+  <!-- Messages -->
+  <data name="CarpetCreatedSuccess" xml:space="preserve">
+    <value>تم إنشاء السجادة بنجاح</value>
+  </data>
+  <data name="CarpetUpdatedSuccess" xml:space="preserve">
+    <value>تم تحديث السجادة بنجاح</value>
+  </data>
+  <data name="CarpetDeletedSuccess" xml:space="preserve">
+    <value>تم حذف السجادة بنجاح</value>
+  </data>
+  <data name="CategoryCreatedSuccess" xml:space="preserve">
+    <value>تم إنشاء الفئة بنجاح</value>
+  </data>
+  <data name="CategoryUpdatedSuccess" xml:space="preserve">
+    <value>تم تحديث الفئة بنجاح</value>
+  </data>
+  <data name="CategoryDeletedSuccess" xml:space="preserve">
+    <value>تم حذف الفئة بنجاح</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>هل أنت متأكد من حذف هذا العنصر؟</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>حدث خطأ. يرجى المحاولة مرة أخرى.</value>
+  </data>
+  
+  <!-- Units -->
+  <data name="Meters" xml:space="preserve">
+    <value>متر</value>
+  </data>
+  <data name="SquareMeters" xml:space="preserve">
+    <value>م²</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>وحدة</value>
+  </data>
+  <data name="EGP" xml:space="preserve">
+    <value>جنيه</value>
+  </data>
+  <data name="TotalPrice" xml:space="preserve">
+    <value>السعر الإجمالي</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>المساحة</value>
+  </data>
+</root>

@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.Resources;
 using Domain.Constants;
 using FluentValidation;
 
@@ -9,12 +10,12 @@ public class CreateCategoryDtoValidator : AbstractValidator<CreateCategoryDto>
     public CreateCategoryDtoValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Category name is required")
+            .NotEmpty().WithMessage(ValidationMessages.CategoryNameRequired)
             .MaximumLength(CategoryConstants.NameMaxLength)
-            .WithMessage($"Category name cannot exceed {CategoryConstants.NameMaxLength} characters");
+            .WithMessage(string.Format(ValidationMessages.CategoryNameMaxLength, CategoryConstants.NameMaxLength));
 
         RuleFor(x => x.Description)
             .MaximumLength(CategoryConstants.DescriptionMaxLength)
-            .WithMessage($"Description cannot exceed {CategoryConstants.DescriptionMaxLength} characters");
+            .WithMessage(string.Format(ValidationMessages.CategoryDescriptionMaxLength, CategoryConstants.DescriptionMaxLength));
     }
 }

@@ -1,0 +1,51 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@inject NavigationManager Navigation
+@inject IHttpContextAccessor HttpContextAccessor
+
+<div class="language-switcher">
+    <button class="btn btn-sm btn-outline-primary" @onclick="ToggleLanguage">
+        <i class="bi bi-translate"></i>
+        <span>@(CurrentCulture == "ar" ? "EN" : "العربية")</span>
+    </button>
+</div>
+
+@code {
+    private string CurrentCulture => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+    private void ToggleLanguage()
+    {
+        var newCulture = CurrentCulture == "ar" ? "en" : "ar";
+        var uri = new Uri(Navigation.Uri)
+            .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+        var query = $"?culture={Uri.EscapeDataString(newCulture)}&redirectUri={Uri.EscapeDataString(uri)}";
+
+        Navigation.NavigateTo("/Culture/Set" + query, forceLoad: true);
+    }
+}
+
+<style>
+    .language-switcher {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .language-switcher .btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .language-switcher .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+    }
+
+    .language-switcher i {
+        font-size: 1.1rem;
+    }
+</style>
