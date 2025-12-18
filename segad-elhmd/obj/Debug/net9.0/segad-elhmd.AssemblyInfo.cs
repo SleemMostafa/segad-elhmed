@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("segad-elhmd")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf20a71027933d2de385fb94558c19c6180be437")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c4b9534ce6a6439505ff1e0442e2579b4549c5c")]
 [assembly: System.Reflection.AssemblyProductAttribute("segad-elhmd")]
 [assembly: System.Reflection.AssemblyTitleAttribute("segad-elhmd")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
