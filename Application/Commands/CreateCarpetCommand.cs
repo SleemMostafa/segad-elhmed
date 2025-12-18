@@ -23,11 +23,15 @@ public class CreateCarpetCommandHandler(AppDbContext context) : IRequestHandler<
             Material = request.CarpetDto.Material,
             PricePerSquareMeter = request.CarpetDto.PricePerSquareMeter,
             StockQuantity = request.CarpetDto.StockQuantity,
+            CategoryId = request.CarpetDto.CategoryId,
             CreatedAt = DateTime.UtcNow
         };
 
         context.Carpets.Add(carpet);
         await context.SaveChangesAsync(cancellationToken);
+        
+        // Load category for response
+        await context.Entry(carpet).Reference(c => c.Category).LoadAsync(cancellationToken);
         var created = carpet;
 
         return new CarpetDto
@@ -41,6 +45,8 @@ public class CreateCarpetCommandHandler(AppDbContext context) : IRequestHandler<
             Material = created.Material,
             PricePerSquareMeter = created.PricePerSquareMeter,
             StockQuantity = created.StockQuantity,
+            CategoryId = created.CategoryId,
+            CategoryName = created.Category.Name,
             Area = created.Area,
             TotalPrice = created.TotalPrice,
             CreatedAt = created.CreatedAt,

@@ -47,6 +47,21 @@
                             <DataAnnotationsValidator />
                             
                             <div class="mb-3">
+                                <label class="form-label">Category *</label>
+                                <InputSelect @bind-Value="model.CategoryId" class="form-select">
+                                    <option value="">-- Select Category --</option>
+                                    @if (categories != null)
+                                    {
+                                        @foreach (var category in categories)
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => model.CategoryId)" />
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label">Name *</label>
                                 <InputText @bind-Value="model.Name" class="form-control" />
                                 <ValidationMessage For="@(() => model.Name)" />
@@ -129,9 +144,11 @@
     private bool isLoading = true;
     private bool isSubmitting = false;
     private List<string> validationErrors = new();
+    private IEnumerable<CategoryDto>? categories;
 
     protected override async Task OnInitializedAsync()
     {
+        categories = await Mediator.Send(new GetAllCategoriesQuery());
         await LoadCarpet();
     }
 
@@ -152,7 +169,8 @@
                 Color = carpet.Color,
                 Material = carpet.Material,
                 PricePerSquareMeter = carpet.PricePerSquareMeter,
-                StockQuantity = carpet.StockQuantity
+                StockQuantity = carpet.StockQuantity,
+                CategoryId = carpet.CategoryId
             };
         }
         

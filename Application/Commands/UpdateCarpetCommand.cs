@@ -26,9 +26,13 @@ public class UpdateCarpetCommandHandler(AppDbContext context) : IRequestHandler<
         existing.Material = request.CarpetDto.Material;
         existing.PricePerSquareMeter = request.CarpetDto.PricePerSquareMeter;
         existing.StockQuantity = request.CarpetDto.StockQuantity;
+        existing.CategoryId = request.CarpetDto.CategoryId;
         existing.UpdatedAt = DateTime.UtcNow;
 
         await context.SaveChangesAsync(cancellationToken);
+        
+        // Load category for response
+        await context.Entry(existing).Reference(c => c.Category).LoadAsync(cancellationToken);
         var updated = existing;
 
         return new CarpetDto
@@ -42,6 +46,8 @@ public class UpdateCarpetCommandHandler(AppDbContext context) : IRequestHandler<
             Material = updated.Material,
             PricePerSquareMeter = updated.PricePerSquareMeter,
             StockQuantity = updated.StockQuantity,
+            CategoryId = updated.CategoryId,
+            CategoryName = updated.Category.Name,
             Area = updated.Area,
             TotalPrice = updated.TotalPrice,
             CreatedAt = updated.CreatedAt,

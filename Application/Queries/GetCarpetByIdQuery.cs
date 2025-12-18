@@ -1,6 +1,7 @@
 using MediatR;
 using Application.DTOs;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries;
 
@@ -10,7 +11,9 @@ public class GetCarpetByIdQueryHandler(AppDbContext context) : IRequestHandler<G
 {
     public async Task<CarpetDto?> Handle(GetCarpetByIdQuery request, CancellationToken cancellationToken)
     {
-        var carpet = await context.Carpets.FindAsync(new object[] { request.Id }, cancellationToken);
+        var carpet = await context.Carpets
+            .Include(c => c.Category)
+            .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
         
         if (carpet == null)
             return null;
@@ -26,6 +29,8 @@ public class GetCarpetByIdQueryHandler(AppDbContext context) : IRequestHandler<G
             Material = carpet.Material,
             PricePerSquareMeter = carpet.PricePerSquareMeter,
             StockQuantity = carpet.StockQuantity,
+            CategoryId = carpet.CategoryId,
+            CategoryName = carpet.Category.Name,
             Area = carpet.Area,
             TotalPrice = carpet.TotalPrice,
             CreatedAt = carpet.CreatedAt,

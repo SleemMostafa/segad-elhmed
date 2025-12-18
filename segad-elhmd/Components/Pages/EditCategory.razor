@@ -1,0 +1,121 @@
+@page "/categories/edit/{id:guid}"
+@using MediatR
+@using Application.Commands
+@using Application.Queries
+@using Application.DTOs
+@inject IMediator Mediator
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Edit Category</PageTitle>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="mb-4">Edit Category</h1>
+
+            @if (updateDto == null)
+            {
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <EditForm Model="@updateDto" OnValidSubmit="@HandleSubmit" FormName="editCategory">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="alert alert-danger" />
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Category Name <span class="text-danger">*</span></label>
+                                <InputText id="name" class="form-control" @bind-Value="updateDto.Name" />
+                                <ValidationMessage For="@(() => updateDto.Name)" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <InputTextArea id="description" class="form-control" @bind-Value="updateDto.Description" rows="4" />
+                                <ValidationMessage For="@(() => updateDto.Description)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <i class="bi bi-exclamation-triangle"></i> @errorMessage
+                        </div>
+                    }
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary me-2" disabled="@isSubmitting">
+                            @if (isSubmitting)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                            }
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                        <a href="/categories" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private UpdateCategoryDto? updateDto { get; set; }
+
+    private bool isSubmitting = false;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (updateDto == null)
+        {
+            var category = await Mediator.Send(new GetCategoryByIdQuery(Id));
+            if (category == null)
+            {
+                Navigation.NavigateTo("/categories");
+                return;
+            }
+
+            updateDto = new UpdateCategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            };
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            isSubmitting = true;
+            errorMessage = null;
+            
+            await Mediator.Send(new UpdateCategoryCommand(updateDto!));
+            Navigation.NavigateTo("/categories");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error updating category: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}

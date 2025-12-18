@@ -14,6 +14,13 @@ public class Carpet
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     
+    // Foreign Key
+    public Guid CategoryId { get; set; }
+    
+    // Navigation property
+    public Category Category { get; set; } = null!;
+    
+    // Calculated properties
     public decimal TotalPrice => Length * Width * PricePerSquareMeter;
     public decimal Area => Length * Width;
 }

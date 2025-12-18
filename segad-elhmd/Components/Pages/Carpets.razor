@@ -43,6 +43,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Color</th>
                         <th>Material</th>
                         <th>Size (L×W)</th>
@@ -58,6 +59,7 @@
                     {
                         <tr>
                             <td>@carpet.Name</td>
+                            <td><span class="badge bg-secondary">@carpet.CategoryName</span></td>
                             <td>@carpet.Color</td>
                             <td>@carpet.Material</td>
                             <td>@carpet.Length.ToString("F2") × @carpet.Width.ToString("F2") m</td>

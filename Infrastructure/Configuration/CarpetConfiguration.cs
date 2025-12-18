@@ -56,10 +56,15 @@ public class CarpetConfiguration : IEntityTypeConfiguration<Carpet>
         builder.Ignore(e => e.Area);
         builder.Ignore(e => e.TotalPrice);
 
+        // Foreign Key
+        builder.Property(e => e.CategoryId)
+            .IsRequired();
+
         // Indexes for common queries
         builder.HasIndex(e => e.Name);
         builder.HasIndex(e => e.Color);
         builder.HasIndex(e => e.Material);
         builder.HasIndex(e => e.StockQuantity);
+        builder.HasIndex(e => e.CategoryId);
     }
 }

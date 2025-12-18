@@ -11,7 +11,9 @@ public class GetAllCarpetsQueryHandler(AppDbContext context) : IRequestHandler<G
 {
     public async Task<IEnumerable<CarpetDto>> Handle(GetAllCarpetsQuery request, CancellationToken cancellationToken)
     {
-        var carpets = await context.Carpets.ToListAsync(cancellationToken);
+        var carpets = await context.Carpets
+            .Include(c => c.Category)
+            .ToListAsync(cancellationToken);
         
         return carpets.Select(c => new CarpetDto
         {
@@ -24,6 +26,8 @@ public class GetAllCarpetsQueryHandler(AppDbContext context) : IRequestHandler<G
             Material = c.Material,
             PricePerSquareMeter = c.PricePerSquareMeter,
             StockQuantity = c.StockQuantity,
+            CategoryId = c.CategoryId,
+            CategoryName = c.Category.Name,
             Area = c.Area,
             TotalPrice = c.TotalPrice,
             CreatedAt = c.CreatedAt,

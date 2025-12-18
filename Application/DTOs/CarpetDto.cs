@@ -11,6 +11,8 @@ public class CarpetDto
     public string Material { get; set; } = string.Empty;
     public decimal PricePerSquareMeter { get; set; }
     public int StockQuantity { get; set; }
+    public Guid CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
     public decimal Area { get; set; }
     public decimal TotalPrice { get; set; }
     public DateTime CreatedAt { get; set; }

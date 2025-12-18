@@ -2,6 +2,7 @@
 @using MediatR
 @using Application.DTOs
 @using Application.Commands
+@using Application.Queries
 @inject IMediator Mediator
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
@@ -29,6 +30,21 @@
                     <EditForm Model="@model" OnValidSubmit="HandleSubmit">
                         <DataAnnotationsValidator />
                         
+                        <div class="mb-3">
+                            <label class="form-label">Category *</label>
+                            <InputSelect @bind-Value="model.CategoryId" class="form-select">
+                                <option value="">-- Select Category --</option>
+                                @if (categories != null)
+                                {
+                                    @foreach (var category in categories)
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => model.CategoryId)" />
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">Name *</label>
                             <InputText @bind-Value="model.Name" class="form-control" />
@@ -107,6 +123,12 @@
     private CreateCarpetDto model = new();
     private bool isSubmitting = false;
     private List<string> validationErrors = new();
+    private IEnumerable<CategoryDto>? categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await Mediator.Send(new GetAllCategoriesQuery());
+    }
 
     private async Task HandleSubmit()
     {
